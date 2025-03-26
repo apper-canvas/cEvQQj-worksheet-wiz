@@ -11,6 +11,8 @@ import {
   ChevronDown,
   Sparkles
 } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { useWorksheets } from '../context/WorksheetContext'
 
 // CBSE subjects by grade
 const subjectsByGrade = {
@@ -77,6 +79,8 @@ const questionTypes = [
 ]
 
 const MainFeature = () => {
+  const navigate = useNavigate()
+  const { addWorksheet } = useWorksheets()
   const [grade, setGrade] = useState("")
   const [subject, setSubject] = useState("")
   const [topics, setTopics] = useState([])
@@ -89,6 +93,7 @@ const MainFeature = () => {
   const [success, setSuccess] = useState(false)
   const [isTopicDropdownOpen, setIsTopicDropdownOpen] = useState(false)
   const [isQuestionTypeDropdownOpen, setIsQuestionTypeDropdownOpen] = useState(false)
+  const [newWorksheetId, setNewWorksheetId] = useState(null)
 
   // Update available topics when subject changes
   useEffect(() => {
@@ -153,9 +158,23 @@ const MainFeature = () => {
     
     setIsGenerating(true)
     
+    // Create the worksheet object
+    const worksheetData = {
+      worksheetName,
+      grade,
+      subject,
+      selectedTopics,
+      questionCount,
+      selectedQuestionTypes
+    }
+    
     // Simulate API call
     setTimeout(() => {
       setIsGenerating(false)
+      
+      // Add worksheet to context and get ID
+      const id = addWorksheet(worksheetData)
+      setNewWorksheetId(id)
       setSuccess(true)
       
       // Reset form after 3 seconds
@@ -167,6 +186,7 @@ const MainFeature = () => {
         setQuestionCount(10)
         setSelectedQuestionTypes([])
         setWorksheetName("")
+        setNewWorksheetId(null)
       }, 3000)
     }, 2000)
   }
@@ -480,9 +500,21 @@ const MainFeature = () => {
                   <Sparkles size={40} className="text-green-500" />
                 </motion.div>
                 <h3 className="text-xl font-bold mb-2">Worksheet Created!</h3>
-                <p className="text-surface-600 dark:text-surface-300">
+                <p className="text-surface-600 dark:text-surface-300 mb-4">
                   Your worksheet has been generated successfully.
                 </p>
+                <button 
+                  onClick={() => {
+                    if (newWorksheetId) {
+                      navigate(`/worksheets/${newWorksheetId}`)
+                    } else {
+                      navigate('/worksheets')
+                    }
+                  }}
+                  className="btn btn-primary"
+                >
+                  View Worksheet
+                </button>
               </div>
             </motion.div>
           )}
