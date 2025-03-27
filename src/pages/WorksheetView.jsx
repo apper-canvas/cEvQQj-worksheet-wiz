@@ -74,22 +74,280 @@ const WorksheetView = () => {
     )
   }
   
-  // Generate some placeholder questions based on the worksheet configuration
+  // Generate actual questions based on the worksheet configuration
   const generateQuestions = () => {
     const questions = []
     const types = worksheet.selectedQuestionTypes
     const topics = worksheet.selectedTopics
+    const subject = worksheet.subject
+    const grade = worksheet.grade
     
+    // Question bank based on subject and topics
+    const questionBank = {
+      Mathematics: {
+        'Algebra': [
+          {
+            type: 'Multiple Choice',
+            text: 'If 3x + 7 = 22, what is the value of x?',
+            options: ['3', '5', '7', '9']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The solution to the equation 2x - 3 = 11 is x = _______.'
+          },
+          {
+            type: 'Short Answer',
+            text: 'Solve for x: 5x - 2 = 3x + 6'
+          },
+          {
+            type: 'True/False',
+            text: 'The equation x² = 9 has exactly one solution.'
+          },
+          {
+            type: 'Long Answer',
+            text: 'Solve the system of equations: 2x + y = 7 and 3x - 2y = 1. Show all your work.'
+          }
+        ],
+        'Geometry': [
+          {
+            type: 'Multiple Choice',
+            text: 'The sum of the interior angles of a triangle is:',
+            options: ['90°', '180°', '270°', '360°']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'A quadrilateral with exactly one pair of parallel sides is called a _______.'
+          },
+          {
+            type: 'Short Answer',
+            text: 'Find the area of a circle with radius 5 cm. Use π = 3.14.'
+          },
+          {
+            type: 'True/False',
+            text: 'All squares are rectangles.'
+          },
+          {
+            type: 'Match the Following',
+            columnA: ['Triangle', 'Square', 'Rectangle', 'Circle'],
+            columnB: ['3 sides', '4 equal sides', 'area = πr²', '4 sides with equal opposite sides']
+          }
+        ],
+        'Fractions': [
+          {
+            type: 'Multiple Choice',
+            text: 'What is 1/3 + 1/6?',
+            options: ['1/2', '2/9', '1/9', '3/6']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The simplified form of 8/12 is _______.'
+          },
+          {
+            type: 'Short Answer',
+            text: 'Calculate 2/3 ÷ 1/4.'
+          },
+          {
+            type: 'True/False',
+            text: '3/5 is greater than 7/10.'
+          }
+        ],
+        'Decimals': [
+          {
+            type: 'Multiple Choice',
+            text: 'Which decimal is equal to 3/4?',
+            options: ['0.25', '0.5', '0.75', '0.8']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: '0.125 expressed as a fraction in lowest terms is _______.'
+          },
+          {
+            type: 'Short Answer',
+            text: 'Arrange the following decimals in ascending order: 0.25, 0.5, 0.125, 0.75'
+          }
+        ]
+      },
+      Science: {
+        'Physics': [
+          {
+            type: 'Multiple Choice',
+            text: 'Which of the following is the SI unit of force?',
+            options: ['Joule', 'Newton', 'Watt', 'Pascal']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The formula for calculating speed is distance divided by _______.'
+          },
+          {
+            type: 'True/False',
+            text: 'Mass and weight are the same physical quantity.'
+          },
+          {
+            type: 'Long Answer',
+            text: 'Explain Newton\'s three laws of motion with examples.'
+          }
+        ],
+        'Chemistry': [
+          {
+            type: 'Multiple Choice',
+            text: 'Which of the following is NOT a state of matter?',
+            options: ['Solid', 'Liquid', 'Gas', 'Energy']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The process by which a solid changes directly into a gas is called _______.'
+          },
+          {
+            type: 'Match the Following',
+            columnA: ['Oxygen', 'Hydrogen', 'Carbon', 'Nitrogen'],
+            columnB: ['O', 'H', 'C', 'N']
+          },
+          {
+            type: 'Short Answer',
+            text: 'Write the chemical formula for water and explain its composition.'
+          }
+        ],
+        'Biology': [
+          {
+            type: 'Multiple Choice',
+            text: 'Which organelle is known as the "powerhouse of the cell"?',
+            options: ['Nucleus', 'Mitochondria', 'Ribosome', 'Endoplasmic reticulum']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The process by which plants make their own food using sunlight is called _______.'
+          },
+          {
+            type: 'True/False',
+            text: 'Humans have 23 pairs of chromosomes.'
+          },
+          {
+            type: 'Long Answer',
+            text: 'Describe the process of digestion in humans, starting from the mouth to the large intestine.'
+          }
+        ]
+      },
+      English: {
+        'Grammar': [
+          {
+            type: 'Multiple Choice',
+            text: 'Which of the following is an example of a proper noun?',
+            options: ['City', 'London', 'River', 'Mountain']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The past tense of the verb "go" is _______.'
+          },
+          {
+            type: 'True/False',
+            text: 'Adverbs can modify verbs, adjectives, and other adverbs.'
+          },
+          {
+            type: 'Match the Following',
+            columnA: ['Noun', 'Verb', 'Adjective', 'Adverb'],
+            columnB: ['Person, place, or thing', 'Action or state', 'Describes a noun', 'Describes a verb']
+          }
+        ],
+        'Comprehension': [
+          {
+            type: 'Short Answer',
+            text: 'Read the following passage and answer the question: "The sun was setting behind the mountains, casting long shadows across the valley. The birds were returning to their nests, singing their evening songs." What time of day is described in the passage?'
+          },
+          {
+            type: 'Multiple Choice',
+            text: 'Based on the following sentence, what does "eccentric" most likely mean? "The eccentric old man wore mismatched socks and talked to his pet rocks."',
+            options: ['Wealthy', 'Unusual', 'Friendly', 'Intelligent']
+          },
+          {
+            type: 'Long Answer',
+            text: 'Read the following poem and explain its theme and the literary devices used:\n\n"The road not taken, the path less traveled by,\nHas made all the difference in my life.\nTwo paths diverged in a yellow wood,\nAnd I, I took the one less traveled by."'
+          }
+        ]
+      },
+      'Social Studies': {
+        'History': [
+          {
+            type: 'Multiple Choice',
+            text: 'Who was the first Prime Minister of India?',
+            options: ['Mahatma Gandhi', 'Jawaharlal Nehru', 'Sardar Patel', 'Subhas Chandra Bose']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The Indian Independence Act was passed in the year _______.'
+          },
+          {
+            type: 'True/False',
+            text: 'The Quit India Movement was launched in 1942.'
+          },
+          {
+            type: 'Long Answer',
+            text: 'Describe the role of Mahatma Gandhi in India\'s freedom struggle and his philosophy of non-violence.'
+          }
+        ],
+        'Geography': [
+          {
+            type: 'Multiple Choice',
+            text: 'Which is the longest river in India?',
+            options: ['Ganga', 'Brahmaputra', 'Yamuna', 'Godavari']
+          },
+          {
+            type: 'Fill in the Blanks',
+            text: 'The Tropic of _______ passes through the middle of India.'
+          },
+          {
+            type: 'Match the Following',
+            columnA: ['Mumbai', 'Kolkata', 'Chennai', 'Delhi'],
+            columnB: ['West coast', 'Eastern coast', 'Capital city', 'Ganges Delta']
+          },
+          {
+            type: 'Short Answer',
+            text: 'Name the major climate zones of India and their characteristics.'
+          }
+        ]
+      }
+    }
+    
+    // Generate a mix of questions based on the selected topics and types
     for (let i = 0; i < worksheet.questionCount; i++) {
       const type = types[i % types.length]
       const topic = topics[i % topics.length]
       
-      questions.push({
-        id: `q${i+1}`,
-        type,
-        topic,
-        text: `Sample ${type} question about ${topic} (${worksheet.subject}, Grade ${worksheet.grade})`
-      })
+      // If we have questions for this subject and topic
+      if (questionBank[subject] && questionBank[subject][topic]) {
+        // Filter by question type
+        const availableQuestions = questionBank[subject][topic].filter(q => q.type === type)
+        
+        if (availableQuestions.length > 0) {
+          // Select a question (with rotation to avoid repetition)
+          const questionTemplate = availableQuestions[i % availableQuestions.length]
+          
+          questions.push({
+            id: `q${i+1}`,
+            type,
+            topic,
+            text: questionTemplate.text,
+            options: questionTemplate.options,
+            columnA: questionTemplate.columnA,
+            columnB: questionTemplate.columnB
+          })
+        } else {
+          // Fallback if no matching question type
+          questions.push({
+            id: `q${i+1}`,
+            type,
+            topic,
+            text: `${type} question about ${topic} (${subject}, Grade ${grade})`
+          })
+        }
+      } else {
+        // Fallback if no questions for this subject/topic
+        questions.push({
+          id: `q${i+1}`,
+          type,
+          topic,
+          text: `${type} question about ${topic} (${subject}, Grade ${grade})`
+        })
+      }
     }
     
     return questions
@@ -190,22 +448,24 @@ const WorksheetView = () => {
                   <div>
                     <div className="font-medium">{question.text}</div>
                     
-                    {question.type === 'Multiple Choice' && (
+                    {question.type === 'Multiple Choice' && question.options && (
                       <div className="mt-2 space-y-2">
-                        {['A', 'B', 'C', 'D'].map(option => (
-                          <div key={option} className="flex items-center">
-                            <div className="w-5 h-5 rounded-full border border-surface-400 print:border-black flex items-center justify-center mr-2 print:mr-1">
-                              {option}
+                        {['A', 'B', 'C', 'D'].map((option, idx) => (
+                          idx < question.options.length && (
+                            <div key={option} className="flex items-center">
+                              <div className="w-5 h-5 rounded-full border border-surface-400 print:border-black flex items-center justify-center mr-2 print:mr-1">
+                                {option}
+                              </div>
+                              <span>{question.options[idx]}</span>
                             </div>
-                            <span>Sample option {option}</span>
-                          </div>
+                          )
                         ))}
                       </div>
                     )}
                     
                     {question.type === 'Fill in the Blanks' && (
                       <div className="mt-2">
-                        Complete the sentence: The {worksheet.subject} concept of ____________ is related to {question.topic}.
+                        {question.text}
                       </div>
                     )}
                     
@@ -234,15 +494,15 @@ const WorksheetView = () => {
                       </div>
                     )}
                     
-                    {question.type === 'Match the Following' && (
+                    {question.type === 'Match the Following' && question.columnA && question.columnB && (
                       <div className="mt-2 grid grid-cols-2 gap-4">
                         <div>
                           <div className="font-medium mb-2">Column A</div>
                           <ul className="space-y-2">
-                            {[1, 2, 3, 4].map(num => (
-                              <li key={num} className="flex items-center">
-                                <span className="mr-2">{num}.</span>
-                                <span>Item {num}</span>
+                            {question.columnA.map((item, idx) => (
+                              <li key={idx} className="flex items-center">
+                                <span className="mr-2">{idx + 1}.</span>
+                                <span>{item}</span>
                               </li>
                             ))}
                           </ul>
@@ -250,10 +510,10 @@ const WorksheetView = () => {
                         <div>
                           <div className="font-medium mb-2">Column B</div>
                           <ul className="space-y-2">
-                            {['P', 'Q', 'R', 'S'].map(letter => (
-                              <li key={letter} className="flex items-center">
-                                <span className="mr-2">{letter}.</span>
-                                <span>Match {letter}</span>
+                            {question.columnB.map((item, idx) => (
+                              <li key={idx} className="flex items-center">
+                                <span className="mr-2">{String.fromCharCode(65 + idx)}.</span>
+                                <span>{item}</span>
                               </li>
                             ))}
                           </ul>
