@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { BookOpen, Lightbulb, BarChart3, ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import MainFeature from '../components/MainFeature'
 
 const Home = () => {
@@ -29,7 +30,7 @@ const Home = () => {
             Evaluate performance and get personalized improvement suggestions.
           </p>
           
-          <div className="flex flex-wrap justify-center gap-4 mb-8">
+          <div className="flex flex-wrap justify-center gap-4 mb-8" role="tablist" aria-label="Worksheet features">
             {tabs.map(tab => (
               <motion.button
                 key={tab.id}
@@ -41,6 +42,11 @@ const Home = () => {
                     ? 'bg-gradient text-white shadow-lg' 
                     : 'bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 hover:bg-surface-100 dark:hover:bg-surface-700'
                 }`}
+                id={`tab-${tab.id}`}
+                role="tab"
+                aria-selected={activeTab === tab.id}
+                aria-controls={`panel-${tab.id}`}
+                tabIndex={activeTab === tab.id ? 0 : -1}
               >
                 {tab.icon}
                 {tab.label}
@@ -59,35 +65,45 @@ const Home = () => {
           transition={{ duration: 0.3 }}
         >
           {activeTab === 'create' && (
-            <MainFeature />
+            <div id="panel-create" role="tabpanel" aria-labelledby="tab-create">
+              <MainFeature />
+            </div>
           )}
           
           {activeTab === 'solve' && (
-            <div className="card p-8 text-center">
+            <div id="panel-solve" role="tabpanel" aria-labelledby="tab-solve" className="card p-8 text-center">
               <h2 className="text-2xl font-bold mb-4">Solve Interactive Worksheets</h2>
               <p className="text-surface-600 dark:text-surface-300 mb-6">
                 Access and complete assigned worksheets online with real-time feedback.
               </p>
               <div className="flex justify-center">
-                <button className="btn btn-primary">
+                <Link 
+                  to="/worksheets"
+                  className="btn btn-primary inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  aria-label="View and access your assigned worksheets"
+                >
                   <span>Access My Worksheets</span>
-                  <ArrowRight size={18} className="ml-2" />
-                </button>
+                  <ArrowRight size={18} className="ml-2" aria-hidden="true" />
+                </Link>
               </div>
             </div>
           )}
           
           {activeTab === 'analyze' && (
-            <div className="card p-8 text-center">
+            <div id="panel-analyze" role="tabpanel" aria-labelledby="tab-analyze" className="card p-8 text-center">
               <h2 className="text-2xl font-bold mb-4">Performance Analytics</h2>
               <p className="text-surface-600 dark:text-surface-300 mb-6">
                 View detailed performance reports and get personalized improvement suggestions.
               </p>
               <div className="flex justify-center">
-                <button className="btn btn-primary">
+                <Link
+                  to="/analytics"
+                  className="btn btn-primary inline-flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                  aria-label="View your performance analytics and reports"
+                >
                   <span>View My Performance</span>
-                  <ArrowRight size={18} className="ml-2" />
-                </button>
+                  <ArrowRight size={18} className="ml-2" aria-hidden="true" />
+                </Link>
               </div>
             </div>
           )}
